@@ -81,7 +81,7 @@ blueprint:
 variables:
   page: !input page
   haspentity: !input plate
-  node: '{{ haspentity.split(".")[1].split("_touch")[0] }}'
+  node: '{{ state_attr(""~ haspentity ~"","node") }}'
   id: !input id
   x: !input x
   y: !input y
@@ -98,8 +98,8 @@ mode: single
 max_exceeded: silent
 
 trigger:
-  - platform: homeassistant
-    event: start
+  # - platform: homeassistant
+  #   event: start
   - platform: state
     entity_id: !input plate
     to: 'on'

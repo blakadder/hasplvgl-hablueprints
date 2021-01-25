@@ -13,4 +13,4 @@ action:
   - service: mqtt.publish
     data:
       topic: 'hasp/plates/command/json'
-      payload: '["dim","light","statusupdate"]'
+      payload: '["dim","light","statusupdate","page"]'

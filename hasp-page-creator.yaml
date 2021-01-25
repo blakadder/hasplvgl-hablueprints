@@ -10,7 +10,7 @@ blueprint:
         entity:
           integration: mqtt
           domain: binary_sensor
-          device_class: connectivity
+          device_class: moving
     page:
       name: Page ID (px)
       description: Enter number of the page
@@ -35,7 +35,8 @@ blueprint:
 variables:
   page: !input page
   haspentity: !input plate
-  node: '{{ haspentity.split(".")[1].split("_")[1] }}'
+  # node: '{{ haspentity.split(".")[1].split("_touch")[0] }}'
+  node: '{{ state_attr(""~ haspentity ~"","node") }}'
   btn1: !input btn1
   btn2: !input btn2
   btn3: !input btn3
@@ -49,7 +50,8 @@ trigger:
     event: start
   - platform: state
     entity_id: !input plate
-    to: 'on'
+    attribute: status
+    to: 'available'
 action:
   - service: mqtt.publish
     data:
