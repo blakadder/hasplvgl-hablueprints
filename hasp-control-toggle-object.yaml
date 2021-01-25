@@ -1,0 +1,87 @@
+
+blueprint:
+  name: HASP Control Toggle Object
+  description: Link a HASP toggle (0/1) object with any on/off entity or device
+  domain: automation
+  input:
+    target_entity:
+      name: Entity controlled by the object
+      description: Select an entity to bind with the toggle object on p<x>b<x>
+      selector:
+        entity:
+    plate:
+      name: HASP Plate 
+      description: Select HASP plate whith the object
+      selector:
+        entity:
+          integration: mqtt
+          domain: binary_sensor
+          device_class: moving
+    page:
+      name: Page ID (p<x>)
+      selector: 
+        number:
+          min: 0
+          max: 12
+          mode: box
+    object:
+      name: Object ID (b<x>)
+      selector: 
+        number:
+          min: 1
+          max: 200
+          mode: box
+variables:
+  target_entity: !input target_entity
+  haspentity: !input plate
+  node: '{{ state_attr(""~ haspentity ~"","node") }}'
+  page: !input page
+  object: !input object
+trigger:
+  - platform: mqtt
+    topic: 'hasp/+/state/+'
+  - platform: state
+    entity_id: !input plate
+    attribute: status
+    to: 'available'
+action:
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: '{{ trigger.platform == "mqtt" and trigger.topic == "hasp/" ~ haspentity ~ "/state/p" ˇ ~ page ~ "b" ~ object ~ "" }}'
+        sequence:
+          - choose:
+              - conditions:
+                  - condition: template
+                    value_template: '{{ trigger.payload_json.val == "0" }}'
+                sequence:
+                  - service: homeassistant.turn_off
+                    entity_id: !input target_entity
+              - conditions:
+                  - condition: template
+                    value_template: '{{ trigger.payload_json.val == "1" }}'
+                sequence:
+                  - service: homeassistant.turn_on
+                    entity_id: !input target_entity
+      - conditions:
+          - condition: template
+            value_template: '{{ trigger.platform == "state" }}'
+        sequence:
+          - choose:
+              - conditions:
+                  - condition: template
+                    value_template: '{{ trigger.to_state.state == "on" }}'
+                sequence:
+                  - service: mqtt.publish
+                    data:
+                      topic: 'hasp/{{node}}/command/p[{{page}}].b[{{object}}].val'
+                      payload: 1
+              - conditions:
+                  - condition: template
+                    value_template: '{{ trigger.to_state.state == "off" }}'
+                sequence:
+                  - service: mqtt.publish
+                    data:
+                      topic: 'hasp/{{node}}/command/p[{{page}}].b[{{object}}].val'
+                      payload: 0
+mode: single
