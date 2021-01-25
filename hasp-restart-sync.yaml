@@ -1,0 +1,16 @@
+blueprint:
+  name: HASP Sync States
+  description: Sync states from all hasp-lvgl plates to HA
+  domain: automation
+
+mode: single
+max_exceeded: silent
+
+trigger:
+  - platform: homeassistant
+    event: start
+action:
+  - service: mqtt.publish
+    data:
+      topic: 'hasp/plates/command/json'
+      payload: '["dim","light","statusupdate"]'

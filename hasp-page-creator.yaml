@@ -1,0 +1,64 @@
+blueprint:
+  name: HASP Create Default Page
+  description: Create Jaffa Sunrise HASP pages
+  domain: automation
+  input:
+    plate:
+      name: HASP Plate Entity
+      description: Select an existing HASP plate 
+      selector:
+        entity:
+          integration: mqtt
+          domain: binary_sensor
+          device_class: connectivity
+    page:
+      name: Page ID (px)
+      description: Enter number of the page
+      selector: 
+        number:
+          min: 0
+          max: 12
+          mode: box
+    btn1:
+      name: Button 1 label
+      description: Enter label to use in button
+    btn2:
+      name: Button 2 label
+      description: Enter label to use in button
+    btn3:
+      name: Button 3 label
+      description: Enter label to use in button
+    btn4:
+      name: Button 4 label
+      description: Enter label to use in button
+
+variables:
+  page: !input page
+  haspentity: !input plate
+  node: '{{ haspentity.split(".")[1].split("_")[1] }}'
+  btn1: !input btn1
+  btn2: !input btn2
+  btn3: !input btn3
+  btn4: !input btn4
+
+mode: single
+max_exceeded: silent
+
+trigger:
+  - platform: homeassistant
+    event: start
+  - platform: state
+    entity_id: !input plate
+    to: 'on'
+action:
+  - service: mqtt.publish
+    data:
+      topic: 'hasp/{{node}}/command/jsonl'
+      payload: >
+        {"obj":"btn","id":4,"page":{{page}},"txt":"{{btn1}}","x":5,"y":5,"w":230,"h":58,"bg_color":"#000000","border_color":"#FFAC00","border_width":2,"radius":10,"radius1":10,"radius2":10,"value_ofs_x":-85,"value_font":1,"value_str":"\uf205","value_color":"#B6B6B6","text_color":"#B6B6B6","text_font":22}
+
+        {"obj":"btn","id":5,"page":{{page}},"txt":"{{btn2}}","x":5,"y":68,"w":230,"h":58,"bg_color":"#000000","border_color":"#FFAC00","border_width":2,"radius":10,"radius1":10,"radius2":10,"value_ofs_x":-85,"value_font":1,"value_str":"\uf185","value_color":"#B6B6B6","text_color":"#B6B6B6","text_font":22}
+
+        {"obj":"btn","id":6,"page":{{page}},"txt":"{{btn3}}","x":5,"y":131,"w":230,"h":58,"bg_color":"#000000","border_color":"#FFAC00","border_width":2,"radius":10,"radius1":10,"radius2":10,"value_ofs_x":-85,"value_font":1,"value_str":"\uf186","value_color":"#B6B6B6","text_color":"#B6B6B6","text_font":22}
+
+        {"obj":"btn","id":7,"page":{{page}},"txt":"{{btn4}}","x":5,"y":194,"w":230,"h":58,"bg_color":"#000000","border_color":"#FFAC00","border_width":2,"radius":10,"radius1":10,"radius2":10,"value_ofs_x":-85,"value_font":1,"value_str":"\uf204","value_color":"#B6B6B6","text_color":"#B6B6B6","text_font":22}

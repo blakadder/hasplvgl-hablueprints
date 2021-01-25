@@ -1,0 +1,111 @@
+blueprint:
+  name: HASP Create Button Object
+  # description: Create toggle button object
+  domain: automation
+  input:
+    toggle:
+      name: Button type
+      description: Set button as normal (short/long press/release) or toggle (on/off with states)
+      default: false
+      selector:
+        boolean:
+    plate:
+      name: HASP Plate Entity
+      description: Select an existing HASP plate 
+      selector:
+        entity:
+          integration: mqtt
+          domain: binary_sensor
+          device_class: moving
+    page:
+      name: Page 
+      description: Enter number of the page where you want to draw the object
+      selector: 
+        number:
+          min: 0
+          max: 12
+          mode: slider
+    id:
+      name: Object ID 
+      description: Object ID needs to be unique number, different from previous object id's on the same page
+      selector: 
+        number:
+          min: 1
+          max: 100
+          mode: box
+    x:
+      name: X axis position of object
+      selector: 
+        number:
+          min: 0
+          max: 320
+          mode: box
+    y:
+      name: Y axis position of object
+      selector: 
+        number:
+          min: 0
+          max: 320
+          mode: box
+    w:
+      name: Object Width
+      selector: 
+        number:
+          min: 0
+          max: 320
+          mode: box
+    h:
+      name: Object Height
+      selector: 
+        number:
+          min: 0
+          max: 320
+          mode: box
+    txt:
+      name: Object Label
+    bg_color:
+      name: Object Background Color 
+      description: accepts html hex codes, html friendly color names and RGB656 color codes
+    text_color:
+      name: Object Text Color
+    bg_color1:
+      name: Object Background Color when toggled
+      description: accepts html hex codes, html friendly color names and RGB656 color codes
+    radius:
+      name: Object radius
+      selector: 
+        number:
+          min: 0
+          max: 100
+          mode: slider 
+variables:
+  page: !input page
+  haspentity: !input plate
+  node: '{{ haspentity.split(".")[1].split("_touch")[0] }}'
+  id: !input id
+  x: !input x
+  y: !input y
+  w: !input w
+  h: !input h
+  txt: !input txt
+  bg_color: !input bg_color
+  bg_color1: !input bg_color1
+  text_color: !input text_color
+  radius: !input radius
+  toggle: !input toggle
+
+mode: single
+max_exceeded: silent
+
+trigger:
+  - platform: homeassistant
+    event: start
+  - platform: state
+    entity_id: !input plate
+    to: 'on'
+action:
+  - service: mqtt.publish
+    data:
+      topic: 'hasp/{{node}}/command/jsonl'
+      payload: >
+        {"page":{{page}},"obj":"btn","id":{{id}},"x":{{x}},"y":{{y}},"w":{{w}},"h":{{h}},"opacity":100,"txt":"{{txt}}","radius":{{radius}},"bg_color":"{{bg_color}}","bg_color1":"{{bg_color1}}","text_color":"{{text_color}}","toggle":{{toggle}}}
