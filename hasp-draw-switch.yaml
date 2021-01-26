@@ -1,0 +1,110 @@
+blueprint:
+  name: 'hasp-lvgl: Draw Switch Object'
+  # description: Draw switch object - https://fvanroie.github.io/hasp-docs/#objects/#switch
+  domain: automation
+  input:
+    plate:
+      name: hasp-lvgl Plate Entity
+      description: Select an existing hasp-lvgl plate 
+      selector:
+        entity:
+          integration: mqtt
+          domain: binary_sensor
+          device_class: moving
+    page:
+      name: Page 
+      description: Enter number of the page where you want to draw the object
+      selector: 
+        number:
+          min: 0
+          max: 12
+          mode: slider
+    id:
+      name: Object ID 
+      description: Object ID needs to be unique number, different from previous object id's on the same page
+      selector: 
+        number:
+          min: 1
+          max: 100
+          mode: box
+    x:
+      name: X axis position of object
+      selector: 
+        number:
+          min: 0
+          max: 320
+          mode: box
+    y:
+      name: Y axis position of object
+      selector: 
+        number:
+          min: 0
+          max: 320
+          mode: box
+    w:
+      name: Object Width
+      selector: 
+        number:
+          min: 0
+          max: 320
+          mode: box
+    h:
+      name: Object Height
+      selector: 
+        number:
+          min: 0
+          max: 320
+          mode: box
+    bg_color:
+      name: Switch color in "off" position
+      description: accepts html hex codes, html friendly color names and RGB656 color codes
+    bg_color1:
+      name: Switch color in "on" position
+      description: accepts html hex codes, html friendly color names and RGB656 color codes
+    bg_color2:
+      name: Knob color
+      description: accepts html hex codes, html friendly color names and RGB656 color codes
+    radius:
+      name: Indicator Radius
+      selector: 
+        number:
+          min: 0
+          max: 100
+          mode: slider 
+    radius1:
+      name: Knob Radius
+      selector: 
+        number:
+          min: 0
+          max: 100
+          mode: slider 
+variables:
+  page: !input page
+  haspentity: !input plate
+  node: '{{ state_attr(""~ haspentity ~"","node") }}'
+  id: !input id
+  x: !input x
+  y: !input y
+  w: !input w
+  h: !input h
+  bg_color: !input bg_color
+  bg_color1: !input bg_color1
+  bg_color2: !input bg_color2
+  radius: !input radius
+  radius1: !input radius1
+
+mode: single
+max_exceeded: silent
+
+trigger:
+  - platform: state
+    entity_id: !input plate
+    attribute: status
+    from:
+    to: 'available'
+action:
+  - service: mqtt.publish
+    data:
+      topic: 'hasp/{{node}}/command/jsonl'
+      payload: >
+        {"page":{{page}},"obj":"switch","id":{{id}},"x":{{x}},"y":{{y}},"w":{{w}},"h":{{h}},"bg_color":"{{bg_color}}","bg_color1":"{{bg_color1}}","bg_color2":"{{bg_color2}},"radius":{{radius}},"radius2":{{radius1}}}

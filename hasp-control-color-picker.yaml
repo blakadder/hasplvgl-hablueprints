@@ -37,7 +37,9 @@ variables:
   object: !input object
   target_entity: !input target_entity
   haspentity: !input plate
-  topic: '{{ state_attr(""+ haspentity +"","topic") }}'
+  node: '{{ state_attr("" ~ haspentity ~ "","node") }}'
+  state_topic: '{{ "hasp/" ~ node ~ "/state/p" ~ page ~ "b" ~ object ~ "" }}'
+  command_topic: '{{ "hasp/" ~ node ~ "/command/p[" ~ page ~ "].b[" ~ object ~ "].val"}}'
 trigger:
   - platform: mqtt
     topic: 'hasp/+/state/+'
@@ -49,7 +51,6 @@ trigger:
   - platform: state
     entity_id: !input plate
     attribute: status
-    from: unavailable
     to: available
 action:
   - choose:

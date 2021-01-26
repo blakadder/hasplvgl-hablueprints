@@ -1,0 +1,98 @@
+blueprint:
+  name: 'hasp-lvgl: Draw Jaffa Sunrise Pages'
+  description: Draw Jaffa Sunrise example pages on plate connect or HA restart
+  domain: automation
+  input:
+    plate:
+      name: Plate Entity
+      description: Select a hasp touch screen sensor
+      selector:
+        entity:
+          integration: mqtt
+          domain: binary_sensor
+          device_class: moving
+    btn1:
+      name: Button 1 label
+      description: Enter label to use in button
+    btn2:
+      name: Button 2 label
+      description: Enter label to use in button
+    btn3:
+      name: Button 3 label
+      description: Enter label to use in button
+    btn4:
+      name: Button 4 label
+      description: Enter label to use in button
+    slider1:
+      name: Slider 1 label
+      description: Enter label to use for slider
+    slider2:
+      name: Slider 2 label
+      description: Enter label to use for slider
+    slider3:
+      name: Slider 3 label
+      description: Enter label to use for slider
+
+variables:
+  haspentity: !input plate
+  node: '{{ state_attr("" ~ haspentity ~ "","node") }}'
+  btn1: !input btn1
+  btn2: !input btn2
+  btn3: !input btn3
+  btn4: !input btn4
+  slider1: !input slider1
+  slider2: !input slider2
+  slider3: !input slider3
+
+mode: single
+max_exceeded: silent
+
+trigger:
+  - platform: homeassistant
+    event: start
+  - platform: state
+    entity_id: !input plate
+    attribute: status
+    to: 'available'
+action:
+  - service: mqtt.publish
+    data:
+      topic: 'hasp/{{node}}/command/jsonl'
+#    create Page 0  buttons 
+      payload: >
+        {"obj":"btn","id":4,"page":0,"txt":"{{btn1}}","x":5,"y":5,"w":230,"h":58,"bg_color":"#000000","border_color":"#FFAC00","border_width":2,"radius":10,"radius1":10,"radius2":10,"value_ofs_x":-85,"value_font":1,"value_str":"\uf205","value_color":"#B6B6B6","text_color":"#B6B6B6","text_font":22}
+
+        {"obj":"btn","id":5,"page":0,"txt":"{{btn2}}","x":5,"y":68,"w":230,"h":58,"bg_color":"#000000","border_color":"#FFAC00","border_width":2,"radius":10,"radius1":10,"radius2":10,"value_ofs_x":-85,"value_font":1,"value_str":"\uf185","value_color":"#B6B6B6","text_color":"#B6B6B6","text_font":22}
+
+        {"obj":"btn","id":6,"page":0,"txt":"{{btn3}}","x":5,"y":131,"w":230,"h":58,"bg_color":"#000000","border_color":"#FFAC00","border_width":2,"radius":10,"radius1":10,"radius2":10,"value_ofs_x":-85,"value_font":1,"value_str":"\uf186","value_color":"#B6B6B6","text_color":"#B6B6B6","text_font":22}
+
+        {"obj":"btn","id":7,"page":0,"txt":"{{btn4}}","x":5,"y":194,"w":230,"h":58,"bg_color":"#000000","border_color":"#FFAC00","border_width":2,"radius":10,"radius1":10,"radius2":10,"value_ofs_x":-85,"value_font":1,"value_str":"\uf204","value_color":"#B6B6B6","text_color":"#B6B6B6","text_font":22}
+
+  - service: mqtt.publish
+    data:
+      topic: 'hasp/{{node}}/command/jsonl'
+#   create Page 1  sliders     
+      payload: >
+        {"obj":"label","id":8,"page":1,"txt":"{{slider1}}","x":5,"y":5,"w":230,"h":30,"bg_color":"#000000","border_color":"#C7BAA7","border_width":0,"radius":10,"radius1":10,"radius2":10,"text_color":"#B6B6B6","text_font":22}
+
+        {"obj":"label","id":9,"page":1,"txt":"{{slider2}}","x":5,"y":80,"w":230,"h":30,"bg_color":"#000000","border_color":"#C7BAA7","border_width":0,"radius":10,"radius1":10,"radius2":10,"text_color":"#B6B6B6","text_font":22}
+
+        {"obj":"label","id":10,"page":1,"txt":"{{slider3}}","x":5,"y":165,"w":230,"h":30,"bg_color":"#000000","border_color":"#C7BAA7","border_width":0,"radius":10,"radius1":10,"radius2":10,"text_color":"#B6B6B6","text_font":22}
+
+        {"obj":"slider","id":11,"page":1,"x":20,"y":40,"w":200,"h":30,"bg_color":"#C7BAA7","border_color":"#C7BAA7","border_width":0,"radius":15,"radius1":15,"radius2":20,"text_font":1,"bg_color1":"#FFAC00","bg_color2":"#DC5C05","min":0,"max":255}
+
+        {"obj":"slider","id":12,"page":1,"x":20,"y":120,"w":200,"h":30,"bg_color":"#C7BAA7","border_color":"#C7BAA7","border_width":0,"radius":15,"radius1":15,"radius2":20,"text_font":1,"bg_color1":"#FFAC00","bg_color2":"#DC5C05","min":0,"max":255}
+
+        {"obj":"slider","id":13,"page":1,"x":20,"y":205,"w":200,"h":30,"bg_color":"#C7BAA7","border_color":"#C7BAA7","border_width":0,"radius":15,"radius1":15,"radius2":20,"text_font":1,"bg_color1":"#FFAC00","bg_color2":"#DC5C05","min":0,"max":255}
+
+  - service: mqtt.publish
+    data:
+      topic: 'hasp/{{node}}/command/jsonl'
+#    create Page 254  menu     
+      payload: >
+
+        {"obj":"btn","id":1,"page":254,"x":5,"y":257,"w":73,"h":58,"bg_color":"#000000","border_color":"#C7BAA7","border_width":0,"radius":10,"radius1":10,"radius2":10,"txt":"\uf053","text_color":"#978B7D","text_font":1}
+
+        {"obj":"btn","id":2,"page":254,"x":83,"y":257,"w":73,"h":58,"bg_color":"#000000","border_color":"#C7BAA7","border_width":0,"radius":10,"radius1":10,"radius2":10,"txt":"\uf013","text_color":"#978B7D","text_font":1}
+
+        {"obj":"btn","id":3,"page":254,"x":161,"y":257,"w":73,"h":58,"bg_color":"#000000","border_color":"#C7BAA7","border_width":0,"radius":10,"radius1":10,"radius2":10,"txt":"\uf054","text_color":"#978B7D","text_font":1}

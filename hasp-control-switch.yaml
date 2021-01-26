@@ -1,16 +1,15 @@
 
 blueprint:
-  name: 'hasp-lvgl: Control Slider Object'
-  description: Link a hasp-lvgl slider object with a light
+  name: 'hasp-lvgl: Control Switch Object'
+  description: Link a hasp-lvgl switch object with an entity
   domain: automation
   
   input:
     target_entity:
       name: Entity controlled by the object
-      description: Select an entity to bind with the toggle object on p<x>b<x>
+      description: Select an entity to bind with the switch object on p<x>b<x>
       selector:
         entity:
-          domain: light
     plate:
       name: hasp-lvgl Plate 
       description: Select hasp-lvgl plate whith the object
@@ -44,12 +43,12 @@ variables:
   node: '{{ state_attr("" ~ haspentity ~ "","node") }}'
   state_topic: '{{ "hasp/" ~ node ~ "/state/p" ~ page ~ "b" ~ object ~ "" }}'
   command_topic: '{{ "hasp/" ~ node ~ "/command/p[" ~ page ~ "].b[" ~ object ~ "]"}}'
+
 trigger:
   - platform: mqtt
     topic: 'hasp/+/state/+'
   - platform: state
     entity_id: !input target_entity
-    attribute: brightness
   - platform: state
     entity_id: !input plate
     attribute: status
@@ -62,10 +61,9 @@ action:
           - condition: template
             value_template: '{{ trigger.platform == "mqtt" and trigger.topic == state_topic }}'
         sequence:
-          - service: light.turn_on
+          - service: >-
+              {% if trigger.payload_json.val == 1 %}homeassistant.turn_on{% else %}homeassistant.turn_off{% endif %}
             entity_id: !input target_entity
-            data:
-              brightness: '{{ trigger.payload_json.val | int }}'
       - conditions:
           - condition: template
             value_template: '{{ trigger.platform == "state" and trigger.entity_id == target_entity }}'
@@ -73,8 +71,7 @@ action:
           - service: mqtt.publish
             data:
               topic: '{{ command_topic }}.val'
-              # payload: '{{ trigger.to_state.attributes.brightness | int }}'
-              payload: '{{ state_attr("" ~ target_entity ~ "", "brightness") | int }}'
+              payload: '{{ trigger.to_state.state }}'
       - conditions:
           - condition: template
             value_template: '{{ trigger.platform == "state" and trigger.entity_id == haspentity }}'
@@ -83,4 +80,4 @@ action:
           - service: mqtt.publish
             data:
               topic: '{{ command_topic }}.val'
-              payload: '{{ state_attr("" ~ target_entity ~ "", "brightness") | int }}'
+              payload: '{{ states("" ~ target_entity ~ "") }}'
