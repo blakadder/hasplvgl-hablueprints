@@ -1,7 +1,7 @@
 
 blueprint:
-  name: HASP Color Picker Object
-  description: Link a HASP object with an RGB light
+  name: 'hasp-lvgl: Control Color Picker Object'
+  description: Link a hasp-lvgl object with an RGB light
   domain: automation
   input:
     target_entity:
@@ -11,7 +11,7 @@ blueprint:
         entity:
           domain: light
     plate:
-      name: HASP Plate Entity
+      name: hasp-lvgl Plate Entity
       selector:
         entity:
           integration: mqtt

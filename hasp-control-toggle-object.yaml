@@ -1,7 +1,7 @@
 
 blueprint:
-  name: HASP Control Toggle Object
-  description: Link a HASP toggle (0/1) object with any on/off entity or device
+  name: 'hasp-lvgl: Control Toggle Object'
+  description: Link a hasp-lvgl toggle (0/1) object with any on/off entity or device
   domain: automation
 
   input:
@@ -11,8 +11,8 @@ blueprint:
       selector:
         entity:
     plate:
-      name: HASP Plate 
-      description: Select HASP plate whith the object
+      name: hasp-lvgl Plate 
+      description: Select hasp-lvgl plate whith the object
       selector:
         entity:
           integration: mqtt
@@ -51,7 +51,8 @@ action:
   - choose:
       - conditions:
           - condition: template
-            value_template: '{{ trigger.platform == "mqtt" and trigger.topic == "hasp/" ~ haspentity ~ "/state/p" ˇ ~ page ~ "b" ~ object ~ "" }}'
+            value_template: >-
+              {{ trigger.platform == "mqtt" and trigger.topic == "hasp/" ~ haspentity ~ "/state/p" ˇ ~ page ~ "b" ~ object ~ "" }}
         sequence:
           - choose:
               - conditions:

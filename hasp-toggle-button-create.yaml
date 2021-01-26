@@ -1,5 +1,5 @@
 blueprint:
-  name: HASP Create Button Object
+  name: 'hasp-lvgl: Draw Button Object'
   # description: Create toggle button object
   domain: automation
   input:
@@ -10,8 +10,8 @@ blueprint:
       selector:
         boolean:
     plate:
-      name: HASP Plate Entity
-      description: Select an existing HASP plate 
+      name: hasp-lvgl Plate Entity
+      description: Select an existing hasp-lvgl plate 
       selector:
         entity:
           integration: mqtt

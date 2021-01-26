@@ -1,5 +1,5 @@
 blueprint:
-  name: HASP Sync States
+  name: 'hasp-lvgl: Sync States'
   description: Sync states from all hasp-lvgl plates to HA
   domain: automation
 
@@ -9,6 +9,10 @@ max_exceeded: silent
 trigger:
   - platform: homeassistant
     event: start
+  - platform: mqtt
+    topic: hasp/+/LWT
+    payload: online
+
 action:
   - service: mqtt.publish
     data:
