@@ -18,7 +18,7 @@ blueprint:
         number:
           min: 0
           max: 12
-          mode: box
+          mode: slider
     btn1:
       name: Button 1 label
       description: Enter label to use in button

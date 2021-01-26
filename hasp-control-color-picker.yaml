@@ -1,0 +1,85 @@
+
+blueprint:
+  name: HASP Color Picker Object
+  description: Link a HASP object with an RGB light
+  domain: automation
+  input:
+    target_entity:
+      name: Entity controlled by the object
+      description: Select an entity to bind with the toggle object on p<x>b<x>
+      selector:
+        entity:
+          domain: light
+    plate:
+      name: HASP Plate Entity
+      selector:
+        entity:
+          integration: mqtt
+          domain: sensor
+    page:
+      name: Page ID (px)
+      description: Enter number of the page
+      selector: 
+        number:
+          min: 0
+          max: 12
+          mode: box
+    object:
+      name: Object ID (ox)
+      description: Enter id of the object
+      selector: 
+        number:
+          min: 1
+          max: 200
+          mode: box
+variables:
+  page: !input page
+  object: !input object
+  target_entity: !input target_entity
+  haspentity: !input plate
+  topic: '{{ state_attr(""+ haspentity +"","topic") }}'
+trigger:
+  - platform: mqtt
+    topic: 'hasp/+/state/+'
+  - platform: state
+    entity_id: !input target_entity
+    attribute: rgb_color
+  - platform: homeassistant
+    event: start
+  - platform: state
+    entity_id: !input plate
+    attribute: status
+    from: unavailable
+    to: available
+action:
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: >-
+              {{ (trigger.platform == "mqtt") and (trigger.topic == "hasp/" + topic + "/state/p" + page + "b" + object + "") }}
+        sequence:
+          - service: light.turn_on
+            entity_id: !input target_entity
+            data:
+              rgb_color: '[{{ trigger.payload_json.r | int }},{{ trigger.payload_json.g | int }},{{ trigger.payload_json.b | int }}]'
+      - conditions:
+          - condition: template
+            value_template: '{{ trigger.platform == "state" }}'
+        sequence:
+          - service: mqtt.publish
+            data:
+              topic: 'hasp/{{topic}}/command/p[{{page}}].b[{{object}}].color'
+              payload: >-
+                {% set rgb = trigger.to_state.attributes.rgb_color %}
+                {{ "#%02x%02x%02x" | format(rgb[0],rgb[1],rgb[2]) }}
+      - conditions:
+          - condition: template
+            value_template: '{{ (trigger.platform == "state") and (trigger.entity_id == "" + haspentity +"") }}'
+        sequence:
+          - service: mqtt.publish
+            data:
+              topic: 'hasp/{{topic}}/command/p[{{page}}].b[{{object}}].color'
+              payload: >-
+                {% set rgb = trigger.to_state.attributes.rgb_color %}
+                {{ "#%02x%02x%02x" | format(rgb[0],rgb[1],rgb[2]) }}
+mode: single

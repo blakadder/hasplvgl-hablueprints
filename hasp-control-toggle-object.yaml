@@ -3,6 +3,7 @@ blueprint:
   name: HASP Control Toggle Object
   description: Link a HASP toggle (0/1) object with any on/off entity or device
   domain: automation
+
   input:
     target_entity:
       name: Entity controlled by the object
@@ -23,7 +24,7 @@ blueprint:
         number:
           min: 0
           max: 12
-          mode: box
+          mode: slider
     object:
       name: Object ID (b<x>)
       selector: 
@@ -31,6 +32,8 @@ blueprint:
           min: 1
           max: 200
           mode: box
+mode: single
+
 variables:
   target_entity: !input target_entity
   haspentity: !input plate
@@ -84,4 +87,3 @@ action:
                     data:
                       topic: 'hasp/{{node}}/command/p[{{page}}].b[{{object}}].val'
                       payload: 0
-mode: single

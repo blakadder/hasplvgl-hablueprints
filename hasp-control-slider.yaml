@@ -3,12 +3,14 @@ blueprint:
   name: HASP Control Slider Object
   description: Link a HASP slider object with a light
   domain: automation
+  
   input:
     target_entity:
       name: Entity controlled by the object
       description: Select an entity to bind with the toggle object on p<x>b<x>
       selector:
         entity:
+          domain: light
     plate:
       name: HASP Plate 
       description: Select HASP plate whith the object
@@ -31,6 +33,7 @@ blueprint:
           min: 1
           max: 200
           mode: box
+mode: single
 variables:
   page: !input page
   object: !input object
@@ -76,4 +79,3 @@ action:
             data:
               topic: 'hasp/{{node}}/command/p[{{page}}].b[{{object}}].val'
               payload: '{{ trigger.to_state.attributes.brightness | int }}'
-mode: single
