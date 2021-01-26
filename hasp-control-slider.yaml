@@ -9,7 +9,6 @@ blueprint:
       description: Select an entity to bind with the toggle object on p<x>b<x>
       selector:
         entity:
-        domain: light
     plate:
       name: HASP Plate 
       description: Select HASP plate whith the object
