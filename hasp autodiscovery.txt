@@ -1,0 +1,115 @@
+hasp autodiscovery
+
+hasptest
+
+## IDLE BINARY SENSOR
+
+homeassistant/binary_sensor/hasptest/idlestate/config 
+
+name: hasptest Touch
+state_topic: hasp/hasptest/state/idle
+value_template: '{% if value == "OFF" %}ON{% else %}OFF{% endif %}'
+device_class: moving
+json_attributes_topic: hasp/hasptest/state/statusupdate
+availability_topic: "hasp/hasptest/LWT"
+unique_id: 'hasptest_idlestate'
+device:
+  identifiers:
+    - 'hasptest'
+  name: 'HASP Test'
+  model: 'hasptest'
+  sw_version: 'v0.3.2'
+  manufacturer: hasp-lvgl
+
+## IDLE SENSOR
+
+homeassistant/sensor/hasptest_idle/config 
+
+name: 'hasptest Idle State'
+state_topic: hasp/hasptest/state/idle
+value_template: '{{ value | capitalize }}'
+icon: 'hass:card'
+json_attributes_topic: "hasp/hasptest/state/statustest"
+availability_topic: "hasp/hasptest/LWT"
+unique_id: 'hasptest_idle'
+device:
+  identifiers:
+    - 'hasptest'
+  name: 'HASP Test'
+  model: 'hasptest'
+  sw_version: 'v0.3.2'
+  manufacturer: hasp-lvgl
+
+## ACTIVE PAGE
+
+homeassistant/sensor/hasptest_page/config 
+
+
+name: 'hasptest Active Page'
+state_topic: hasp/plate_aad368/state/page
+icon: 'mdi:cellphone-information'
+availability_topic: "hasp/plate_aad368/LWT"
+unique_id: 'plate_aad368_page'
+device:
+  identifiers:
+    - 'hasptest'
+  name: 'hasptest'
+  manufacturer: hasp-lvgl
+
+## DEVICE TRIGGERS FOR IDLE STATES
+
+homeassistant/device_automation/hasptest/idle_short/config 
+
+{"automation_type":"trigger","topic":"hasp/hasptest/state/idle","type":"idle screen","subtype":"short","payload":"SHORT","device":{"identifiers":["hasptest"]}}
+
+homeassistant/device_automation/hasptest/idle_long/config 
+
+{"automation_type":"trigger","topic":"hasp/hasptest/state/idle","type":"idle screen","subtype":"long","payload":"LONG","device":{"identifiers":["hasptest"]}}
+
+## CONNECTIVITY BINARY SENSOR
+
+homeassistant/binary_sensor/hasptest_connectivity/config 
+
+name: 'HASP hasptest Connectivity'
+state_topic: "hasp/hasptest/LWT"
+payload_on: "online"
+payload_off: "offline"
+device_class: connectivity
+json_attributes_topic: "hasp/hasptest/state/statusupdate"
+unique_id: 'hasptest_connectivity'
+device:
+  identifiers:
+    - 'hasptest'
+  name: 'HASP Test'
+  model: 'hasptest'
+  sw_version: 'v0.3.2'
+  manufacturer: hasp-lvgl
+
+## BACKLIGHT CONFIG
+
+homeassistant/light/hasptest_bcklght/config 
+
+name: 'hasptest Backlight'
+state_topic: hasp/hasptest/state/light
+command_topic: hasp/hasptest/command/light
+brightness_state_topic: hasp/hasptest/state/dim
+brightness_scale: 100
+brightness_command_topic: hasp/hasptest/command/dim
+availability_topic: hasp/hasptest/LWT
+unique_id: 'hasptest_bcklght'
+device:
+  identifiers:
+    - 'hasptest'
+
+## OUTPUT
+homeassistant/switch/hasptest_output2/config
+
+name: 'hasptest Output2'
+state_topic: hasp/hasptest/state/output
+value_template: '{% if value_json.group == 2 %}{{ value_json.state }}{% endif %}'
+command_topic: hasp/hasptest/command/output2
+availability_topic: hasp/hasptest/LWT
+unique_id: 'hasptest_bcklght'
+device:
+  identifiers:
+    - 'hasptest'
