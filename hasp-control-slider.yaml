@@ -45,7 +45,7 @@ trigger:
   - platform: homeassistant
     event: start
   - platform: state
-    entity_id: !input target_plate
+    entity_id: !input plate
     attribute: status
     from: unavailable
     to: available
