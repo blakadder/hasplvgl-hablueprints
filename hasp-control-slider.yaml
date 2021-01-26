@@ -35,7 +35,7 @@ variables:
   page: !input page
   object: !input object
   target_entity: !input target_entity
-  haspentity: !input target_plate
+  haspentity: !input plate
   topic: '{{ state_attr(""~ haspentity ~"","node") }}'
 trigger:
   - platform: mqtt
