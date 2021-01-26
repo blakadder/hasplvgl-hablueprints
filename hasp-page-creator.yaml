@@ -56,6 +56,7 @@ action:
   - service: mqtt.publish
     data:
       topic: 'hasp/{{node}}/command/jsonl'
+# create Page 0
       payload: >
         {"obj":"btn","id":4,"page":{{page}},"txt":"{{btn1}}","x":5,"y":5,"w":230,"h":58,"bg_color":"#000000","border_color":"#FFAC00","border_width":2,"radius":10,"radius1":10,"radius2":10,"value_ofs_x":-85,"value_font":1,"value_str":"\uf205","value_color":"#B6B6B6","text_color":"#B6B6B6","text_font":22}
 
@@ -64,3 +65,15 @@ action:
         {"obj":"btn","id":6,"page":{{page}},"txt":"{{btn3}}","x":5,"y":131,"w":230,"h":58,"bg_color":"#000000","border_color":"#FFAC00","border_width":2,"radius":10,"radius1":10,"radius2":10,"value_ofs_x":-85,"value_font":1,"value_str":"\uf186","value_color":"#B6B6B6","text_color":"#B6B6B6","text_font":22}
 
         {"obj":"btn","id":7,"page":{{page}},"txt":"{{btn4}}","x":5,"y":194,"w":230,"h":58,"bg_color":"#000000","border_color":"#FFAC00","border_width":2,"radius":10,"radius1":10,"radius2":10,"value_ofs_x":-85,"value_font":1,"value_str":"\uf204","value_color":"#B6B6B6","text_color":"#B6B6B6","text_font":22}
+
+  - service: mqtt.publish
+    data:
+      topic: 'hasp/{{node}}/command/jsonl'
+# create Page 254 - menu
+      payload: >
+
+        {"obj":"btn","id":1,"page":254,"x":5,"y":257,"w":73,"h":58,"bg_color":"#000000","border_color":"#C7BAA7","border_width":0,"radius":10,"radius1":10,"radius2":10,"txt":"\uf053","text_color":"#978B7D","text_font":1}
+
+        {"obj":"btn","id":2,"page":254,"x":83,"y":257,"w":73,"h":58,"bg_color":"#000000","border_color":"#C7BAA7","border_width":0,"radius":10,"radius1":10,"radius2":10,"txt":"\uf013","text_color":"#978B7D","text_font":1}
+
+        {"obj":"btn","id":3,"page":254,"x":161,"y":257,"w":73,"h":58,"bg_color":"#000000","border_color":"#C7BAA7","border_width":0,"radius":10,"radius1":10,"radius2":10,"txt":"\uf054","text_color":"#978B7D","text_font":1}
