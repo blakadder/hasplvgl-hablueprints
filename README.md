@@ -1,2 +1,2 @@
 # hasplvgl-hablueprints
-Home Assistant blueprints for hasp-lvgl
+Alpha version of Home Assistant blueprints for hasp-lvgl
