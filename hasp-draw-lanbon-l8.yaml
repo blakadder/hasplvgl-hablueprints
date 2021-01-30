@@ -19,14 +19,6 @@ blueprint:
     btn3:
       name: Relay 3 label
       description: Enter label for button linked to relay3
-    slider1:
-      name: Slider 1 label
-      description: Enter label to use for slider
-    slider2:
-      name: Slider 2 label
-      description: Enter label to use for slider
-    slider3:
-      name: Slider 3 label
       description: Enter label to use for slider
 
 variables:
@@ -35,9 +27,11 @@ variables:
   btn1: !input btn1
   btn2: !input btn2
   btn3: !input btn3
-  slider1: !input slider1
-  slider2: !input slider2
-  slider3: !input slider3
+  primary_color: "teal"
+  secondary_color: "gold"
+  mdl_state: 1
+  mdl_color: "teal"
+  mdl_dim: 67
   wifirssi: >-
     {% set wifirssi = state_attr(haspentity, "rssi") | int %}
     {% if wifirssi > -50 %}
@@ -51,6 +45,7 @@ variables:
     {% else %}
     gray
     {% endif %}
+  unstyle_bar: '"bg_opa":0,"radius":0,"bg_grad_dir":0,"bg_grad_dir1":0,"border_side":0'
 
 mode: single
 max_exceeded: silent
@@ -67,24 +62,24 @@ action:
       payload: >
         {"page":0}
 
-        {"obj":"obj","id":10,"x":0,"y":0,"w":240,"h":40,"bg_color":"silver","border_side":1,"border_width":0,"shadow_spread":0,"shadow_ofs_y":0,"border_color":"black","radius":0,"text_color":"black","text_font":"1","bg_grad_dir":0,"page":0}
+        {"comment":"bar","obj":"obj","id":10,"x":0,"y":0,"w":240,"h":40,"text_color":"black","text_font":"1","bg_color":"silver","bg_grad_dir":0,"radius":0,"enabled":"false","page":0}
 
-        {"comment":"prev page","obj":"btn","id":1,"x":0,"y":1,"w":30,"h":40,"text_font":"2","txt":"\uF053","text_color":"black","bg_opa":0,"border_width":0,"page":0}
+        {"comment":"prev page","obj":"btn","id":11,"x":0,"y":1,"w":30,"h":38,"text_font":"2","txt":"\uF053","text_color":"black",{{unstyle_bar}},"page":0}
 
-        {"comment":"next page","obj":"btn","id":2,"x":210,"y":1,"w":30,"h":40,"text_font":"2","txt":"\uF054","text_color":"black","bg_opa":0,"border_width":0,"page":0}
+        {"comment":"next page","obj":"btn","id":12,"x":210,"y":1,"w":30,"h":38,"text_font":"2","txt":"\uF054","text_color":"black",{{unstyle_bar}},"page":0}
  
 #    create Page 0  icons
   - service: mqtt.publish
     data:
       topic: 'hasp/{{node}}/command/jsonl'
       payload: >
-        {"id":3,"comment":"moodlight icon","obj":"btn","x":40,"y":1,"w":30,"h":40,"text_font":"2","txt":"\uF1DE","text_color":"black","bg_opa":0,"border_width":0,"page":0}
+        {"id":1,"comment":"buttons icon","obj":"btn","x":35,"y":1,"w":35,"h":38,"text_font":"2","txt":"\uF1DE","text_color":"black",{{unstyle_bar}},"page":0}
 
-        {"id":4,"comment":"meter icon","obj":"btn","x":80,"y":1,"w":30,"h":40,"text_font":"2","txt":"\uF1FE","text_color":"black","bg_opa":0,"border_width":0,"page":0}
+        {"id":2,"comment":"moodlight icon","obj":"btn","x":75,"y":1,"w":35,"h":38,"text_font":"2","txt":"\uF0EB","text_color":"black",{{unstyle_bar}},"page":0}
 
-        {"id":5,"comment":"temp icon","obj":"btn","x":120,"y":1,"w":30,"h":40,"text_font":"2","txt":"\uF76B","text_color":"black","bg_opa":0,"border_width":0,"page":0}
+        {"id":3,"comment":"temp icon","obj":"btn","x":120,"y":1,"w":35,"h":38,"text_font":"2","txt":"\uF76B","text_color":"black",{{unstyle_bar}},"page":0}
 
-        {"id":6,"comment":"wifi icon","obj":"btn","x":165,"y":1,"w":30,"h":40,"text_font":"2","txt":"\uF1EB","text_color":"{{wifirssi}}","bg_opa":0,"border_width":0,"page":0}
+        {"id":4,"comment":"wifi icon","obj":"btn","x":165,"y":1,"w":35,"h":38,"text_font":"2","txt":"\uF1EB","text_color":"{{wifirssi}}",{{unstyle_bar}},"page":0}
 
 #   create Page 1 buttons     
   - service: mqtt.publish
@@ -93,11 +88,11 @@ action:
       payload: >
         {"page":1}
 
-        {"obj":"btn","id":1,"x":10,"y":50,"w":220,"h":80,"txt":"{{btn1}}","groupid":2,"bg_color":"teal","bg_grad_dir":0,"radius":10,"border_width":2,"border_color":"grey","border_color1":"black","toggle":1,"bg_color1":"gold","text_color":"white","text_font":"28","page":1}
+        {"obj":"btn","id":1,"x":10,"y":50,"w":220,"h":80,"txt":"{{btn1}}","groupid":2,"bg_color":"{{primary_color}}","bg_grad_dir":0,"radius":10,"border_width":2,"border_color":"grey","border_color1":"black","toggle":1,"bg_color1":"{{secondary_color}}","text_color":"white","text_font":"28","page":1}
 
-        {"obj":"btn","id":2,"x":10,"y":140,"w":220,"h":80,"txt":"{{btn2}}","groupid":2,"bg_color":"teal","bg_grad_dir":0,"radius":10,"border_width":2,"border_color":"grey","border_color1":"black","toggle":1,"bg_color1":"gold","text_color":"white","text_font":"28","page":1}
+        {"obj":"btn","id":2,"x":10,"y":140,"w":220,"h":80,"txt":"{{btn2}}","groupid":2,"bg_color":"{{primary_color}}","bg_grad_dir":0,"radius":10,"border_width":2,"border_color":"grey","border_color1":"black","toggle":1,"bg_color1":"{{secondary_color}}","text_color":"white","text_font":"28","page":1}
 
-        {"obj":"btn","id":3,"x":10,"y":230,"w":220,"h":80,"txt":"{{btn3}}","groupid":3,"bg_color":"teal","bg_grad_dir":0,"radius":10,"border_width":2,"border_color":"grey","border_color1":"black","toggle":1,"bg_color1":"gold","text_color":"white","text_font":"28","page":1}
+        {"obj":"btn","id":3,"x":10,"y":230,"w":220,"h":80,"txt":"{{btn3}}","groupid":3,"bg_color":"{{primary_color}}","bg_grad_dir":0,"radius":10,"border_width":2,"border_color":"grey","border_color1":"black","toggle":1,"bg_color1":"{{secondary_color}}","text_color":"white","text_font":"28","page":1}
 
 #   create Page 2 buttons     
   - service: mqtt.publish
@@ -106,8 +101,13 @@ action:
       payload: >
         {"page":2}
 
-        {"obj":"label","id":1,"x":50,"y":150,"w":200,"h":80,"txt":"Page 2 placeholder"}
+        {"obj":"label","id":4,"x":10,"y":50,"w":100,"h":100,"txt":"Mood\nlight","text_font":3,"mode":"loop","align":1,{{unstyle_bar}},"page":2}
 
+        {"obj":"switch","id":1,"x":120,"y":60,"w":100,"h":50,"bg_color":"{{primary_color}}","bg_color1":"{{secondary_color}}","radius":25,"radius2":25,"bg_opa":75,"border_width":1,"border_side":1,"page":2,"val":"{{mdl_state}}"}
+
+        {"obj":"slider","id":2,"x":180,"y":140,"w":20,"h":150,"bg_color":"{{primary_color}}","bg_color1":"{{secondary_color}}","radius":20,"radius2":20,"bg_opa":100,"border_width":1,"border_side":1,"page":2,"val":"{{mdl_dim}}"}
+
+        {"obj":"cpicker","id":3,"x":10,"y":140,"w":150,"h":150,"page":2,"color":"{{mdl_color}}"}
 #   create Page 3 buttons     
   - service: mqtt.publish
     data:
