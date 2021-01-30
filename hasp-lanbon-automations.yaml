@@ -1,0 +1,100 @@
+blueprint:
+  name: 'hasp-lvlg: Lanbon L8 navbar automations'
+  description: 'Neede automation for the navigation bar'
+  domain: automation
+  input:
+    plate:
+      name: hasp-lvgl Active Page State Entity
+      description: Select an existing hasp-lvgl plate 
+      selector:
+        entity:
+          integration: mqtt
+          domain: number
+
+mode: single
+max_exceeded: silent
+
+variables:
+  haspentity: !input plate
+  node: '{{ haspentity.split(".")[1].replace("_hasp_active_page", "") }}'
+
+trigger:
+  - platform: mqtt
+    topic: hasp/lanbon/state/+
+action:
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: '{{ "p0b11" in trigger.topic }}'
+        sequence:
+          - choose:
+              - conditions:
+                  - condition: template
+                    value_template: '{{ trigger.payload_json.event == "SHORT" }}'
+                sequence:
+                  - service: mqtt.publish
+                    data:
+                      topic: hasp/{{node}}/command/page
+                      payload: prev
+              - conditions:
+                  - condition: template
+                    value_template: '{{ trigger.payload_json.event == "LONG" }}'
+                sequence:
+                  - service: mqtt.publish
+                    data:
+                      topic: hasp/{{node}}/command/page
+                      payload: 1
+      - conditions:
+          - condition: template
+            value_template: '{{ "p0b12" in trigger.topic  }}'
+        sequence:
+          - choose:
+              - conditions:
+                  - condition: template
+                    value_template: '{{ trigger.payload_json.event == "SHORT" }}'
+                sequence:
+                  - service: mqtt.publish
+                    data:
+                      topic: hasp/{{node}}/command/page
+                      payload: next
+              - conditions:
+                  - condition: template
+                    value_template: '{{ trigger.payload_json.event == "LONG" }}'
+                sequence:
+                  - service: mqtt.publish
+                    data:
+                      topic: hasp/{{node}}/command/page
+                      payload: 4
+      - conditions:
+          - condition: template
+            value_template: '{{ trigger.topic == "hasp/" ~ node ~"/state/p0b1"  }}'
+        sequence:
+          - service: mqtt.publish
+            data:
+              topic: hasp/{{node}}/command/page
+              payload: 1
+      - conditions:
+          - condition: template
+            value_template: '{{ "p0b2" in trigger.topic  }}'
+        sequence:
+          - service: mqtt.publish
+            data:
+              topic: hasp/{{node}}/command/page
+              payload: 2
+      - conditions:
+          - condition: template
+            value_template: '{{ "p0b3" in trigger.topic  }}'
+        sequence:
+          - service: mqtt.publish
+            data:
+              topic: hasp/{{node}}/command/page
+              payload: 3
+      - conditions:
+          - condition: template
+            value_template: '{{ "p0b4" in trigger.topic  }}'
+        sequence:
+          - service: mqtt.publish
+            data:
+              topic: hasp/{{node}}/command/page
+              payload: 4
+mode: single

@@ -1,5 +1,5 @@
 blueprint:
-  name: 'hasp-lvgl: Draw Lanbon L8 Blakadder Theme'
+  name: 'hasp-lvgl: Lanbon: Draw Blakadder Theme'
   description: Draw Lanbon L8 pages
   domain: automation
   input:
