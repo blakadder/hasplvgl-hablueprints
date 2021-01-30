@@ -9,8 +9,7 @@ blueprint:
       selector:
         entity:
           integration: mqtt
-          domain: binary_sensor
-          device_class: moving
+          domain: number
     btn1:
       name: Button 1 label
       description: Enter label to use in button
@@ -35,7 +34,7 @@ blueprint:
 
 variables:
   haspentity: !input plate
-  node: '{{ state_attr("" ~ haspentity ~ "","node") }}'
+  node: '{{ haspentity.split(".")[1].replace("_hasp_activepage", "") }}'
   btn1: !input btn1
   btn2: !input btn2
   btn3: !input btn3
@@ -52,8 +51,7 @@ trigger:
     event: start
   - platform: state
     entity_id: !input plate
-    attribute: status
-    to: 'available'
+    from: 'unavailable'
 action:
   - service: mqtt.publish
     data:

@@ -37,7 +37,7 @@ variables:
   object: !input object
   target_entity: !input target_entity
   haspentity: !input plate
-  node: '{{ state_attr("" ~ haspentity ~ "","node") }}'
+  node: '{{ haspentity.split(".")[1].replace("_hasp_active_page", "") }}'
   state_topic: '{{ "hasp/" ~ node ~ "/state/p" ~ page ~ "b" ~ object ~ "" }}'
   command_topic: '{{ "hasp/" ~ node ~ "/command/p[" ~ page ~ "].b[" ~ object ~ "].val"}}'
 trigger:

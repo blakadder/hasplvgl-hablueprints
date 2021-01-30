@@ -15,14 +15,13 @@ blueprint:
       selector:
         entity:
           integration: mqtt
-          domain: binary_sensor
-          device_class: moving
+          domain: number
     page:
       name: Page 
       description: Enter number of the page where you want to draw the object
       selector: 
         number:
-          min: 0
+          min: 1
           max: 12
           mode: slider
     id:
@@ -81,7 +80,7 @@ blueprint:
 variables:
   page: !input page
   haspentity: !input plate
-  node: '{{ state_attr(""~ haspentity ~"","node") }}'
+  node: '{{ haspentity.split(".")[1].replace("_hasp_active_page", "") }}'
   id: !input id
   x: !input x
   y: !input y
@@ -98,14 +97,12 @@ mode: single
 max_exceeded: silent
 
 trigger:
-  # - platform: homeassistant
-  #   event: start
   - platform: state
     entity_id: !input plate
-    to: 'on'
+    to: 'available'
 action:
   - service: mqtt.publish
     data:
       topic: 'hasp/{{node}}/command/jsonl'
       payload: >
-        {"page":{{page}},"obj":"btn","id":{{id}},"x":{{x}},"y":{{y}},"w":{{w}},"h":{{h}},"opacity":100,"txt":"{{txt}}","radius":{{radius}},"bg_color":"{{bg_color}}","bg_color1":"{{bg_color1}}","text_color":"{{text_color}}","toggle":{{toggle}}}
+        {"page":{{page}},"obj":"btn","id":{{id}},"x":{{x}},"y":{{y}},"w":{{w}},"h":{{h}},"opacity":100,"txt":"{{txt}}","radius":{{radius}},"bg_color":"{{bg_color}}","bg_color1":"{{bg_color1}}","text_color":"{{text_color}}","toggle":"{{toggle}}"}

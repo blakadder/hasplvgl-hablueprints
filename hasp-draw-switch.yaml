@@ -100,8 +100,7 @@ trigger:
   - platform: state
     entity_id: !input plate
     attribute: status
-    from:
-    to: 'available'
+    to: 'unavailable'
 action:
   - service: mqtt.publish
     data:
