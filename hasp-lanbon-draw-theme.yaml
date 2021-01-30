@@ -103,9 +103,9 @@ action:
 
         {"obj":"label","id":4,"x":10,"y":50,"w":100,"h":100,"txt":"Mood\nlight","text_font":3,"mode":"loop","align":1,{{unstyle_bar}},"page":2}
 
-        {"obj":"switch","id":1,"x":120,"y":60,"w":100,"h":50,"bg_color":"{{primary_color}}","bg_color1":"{{secondary_color}}","radius":25,"radius2":25,"bg_opa":75,"border_width":1,"border_side":1,"page":2,"val":"{{mdl_state}}"}
+        {"obj":"switch","id":1,"x":120,"y":60,"w":100,"h":50,"bg_color":"{{primary_color}}","bg_color1":"{{secondary_color}}","radius":25,"radius2":25,"bg_grad_dir":0,"bg_grad_dir1":0,"bg_opa":75,"border_width":1,"border_side":1,"page":2,"val":"{{mdl_state}}"}
 
-        {"obj":"slider","id":2,"x":180,"y":140,"w":20,"h":150,"bg_color":"{{primary_color}}","bg_color1":"{{secondary_color}}","radius":20,"radius2":20,"bg_opa":100,"border_width":1,"border_side":1,"page":2,"val":"{{mdl_dim}}"}
+        {"obj":"slider","id":2,"x":180,"y":140,"w":20,"h":150,"bg_color":"{{primary_color}}","bg_color1":"{{secondary_color}}","radius":20,"radius2":20,"bg_opa":100,"bg_grad_dir":0,"bg_grad_dir1":0,"border_width":1,"border_side":1,"page":2,"val":"{{mdl_dim}}"}
 
         {"obj":"cpicker","id":3,"x":10,"y":140,"w":150,"h":150,"page":2,"color":"{{mdl_color}}"}
 #   create Page 3 buttons     
