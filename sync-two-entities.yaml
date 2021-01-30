@@ -1,0 +1,30 @@
+blueprint:
+  name: Sync two entities
+  description: 'Synchronize 2 entities with on/off states'
+  domain: automation
+  input:
+    entity_1:
+      name: Plate entity
+      selector:
+        entity:
+    entity_2:
+      name: Target entity
+      selector:
+        entity:
+mode: single
+max_exceeded: silent
+variables:
+  entity_1: !input 'entity_1'
+  entity_2: !input 'entity_2'
+trigger:
+  - platform: state
+    entity_id: !input 'entity_1'
+  - platform: state
+    entity_id: !input 'entity_2'
+condition:
+  - condition: template
+    value_template: '{{ states(entity_1) != states(entity_2) }}'
+action:
+  - service: homeassistant.turn_{{ trigger.to_state.state }}
+    data:
+      entity_id: '{% if trigger.from_state.entity_id == entity_1 %} {{ entity_2 }} {% else %} {{ entity_1 }} {% endif %}'

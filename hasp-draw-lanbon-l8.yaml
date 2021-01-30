@@ -1,0 +1,136 @@
+blueprint:
+  name: 'hasp-lvgl: Draw Lanbon L8 Blakadder Theme'
+  description: Draw Lanbon L8 pages
+  domain: automation
+  input:
+    plate:
+      name: Lanbon L8 Switch
+      description: Select the hasp active page indicator
+      selector:
+        entity:
+          integration: mqtt
+          domain: number
+    btn1:
+      name: Relay 1 label
+      description: Enter label for button linked to relay1
+    btn2:
+      name: Relay 2 label
+      description: Enter label for button linked to relay2
+    btn3:
+      name: Relay 3 label
+      description: Enter label for button linked to relay3
+    slider1:
+      name: Slider 1 label
+      description: Enter label to use for slider
+    slider2:
+      name: Slider 2 label
+      description: Enter label to use for slider
+    slider3:
+      name: Slider 3 label
+      description: Enter label to use for slider
+
+variables:
+  haspentity: !input plate
+  node: '{{ haspentity.split(".")[1].replace("_hasp_active_page", "") }}'
+  btn1: !input btn1
+  btn2: !input btn2
+  btn3: !input btn3
+  slider1: !input slider1
+  slider2: !input slider2
+  slider3: !input slider3
+  wifirssi: >-
+    {% set wifirssi = state_attr(haspentity, "rssi") | int %}
+    {% if wifirssi > -50 %}
+    green
+    {% elif -50 > wifirssi > -60 %}
+    blue
+    {% elif -60 > wifirssi > -70 %}
+    orange
+    {% elif wifirssi < -70 %}
+    red
+    {% else %}
+    gray
+    {% endif %}
+
+mode: single
+max_exceeded: silent
+
+trigger:
+  - platform: state
+    entity_id: !input plate
+    from: 'unavailable'
+action:
+#    create Page 0  statusbar navigation
+  - service: mqtt.publish
+    data:
+      topic: 'hasp/{{node}}/command/jsonl'
+      payload: >
+        {"page":0}
+
+        {"obj":"obj","id":10,"x":0,"y":0,"w":240,"h":40,"bg_color":"silver","border_side":1,"border_width":0,"shadow_spread":0,"shadow_ofs_y":0,"border_color":"black","radius":0,"text_color":"black","text_font":"1","bg_grad_dir":0,"page":0}
+
+        {"comment":"prev page","obj":"btn","id":1,"x":0,"y":1,"w":30,"h":40,"text_font":"2","txt":"\uF053","text_color":"black","bg_opa":0,"border_width":0,"page":0}
+
+        {"comment":"next page","obj":"btn","id":2,"x":210,"y":1,"w":30,"h":40,"text_font":"2","txt":"\uF054","text_color":"black","bg_opa":0,"border_width":0,"page":0}
+ 
+#    create Page 0  icons
+  - service: mqtt.publish
+    data:
+      topic: 'hasp/{{node}}/command/jsonl'
+      payload: >
+        {"id":3,"comment":"moodlight icon","obj":"btn","x":40,"y":1,"w":30,"h":40,"text_font":"2","txt":"\uF1DE","text_color":"black","bg_opa":0,"border_width":0,"page":0}
+
+        {"id":4,"comment":"meter icon","obj":"btn","x":80,"y":1,"w":30,"h":40,"text_font":"2","txt":"\uF1FE","text_color":"black","bg_opa":0,"border_width":0,"page":0}
+
+        {"id":5,"comment":"temp icon","obj":"btn","x":120,"y":1,"w":30,"h":40,"text_font":"2","txt":"\uF76B","text_color":"black","bg_opa":0,"border_width":0,"page":0}
+
+        {"id":6,"comment":"wifi icon","obj":"btn","x":165,"y":1,"w":30,"h":40,"text_font":"2","txt":"\uF1EB","text_color":"{{wifirssi}}","bg_opa":0,"border_width":0,"page":0}
+
+#   create Page 1 buttons     
+  - service: mqtt.publish
+    data:
+      topic: 'hasp/{{node}}/command/jsonl'
+      payload: >
+        {"page":1}
+
+        {"obj":"btn","id":1,"x":10,"y":50,"w":220,"h":80,"txt":"{{btn1}}","groupid":2,"bg_color":"teal","bg_grad_dir":0,"radius":10,"border_width":2,"border_color":"grey","border_color1":"black","toggle":1,"bg_color1":"gold","text_color":"white","text_font":"28","page":1}
+
+        {"obj":"btn","id":2,"x":10,"y":140,"w":220,"h":80,"txt":"{{btn2}}","groupid":2,"bg_color":"teal","bg_grad_dir":0,"radius":10,"border_width":2,"border_color":"grey","border_color1":"black","toggle":1,"bg_color1":"gold","text_color":"white","text_font":"28","page":1}
+
+        {"obj":"btn","id":3,"x":10,"y":230,"w":220,"h":80,"txt":"{{btn3}}","groupid":3,"bg_color":"teal","bg_grad_dir":0,"radius":10,"border_width":2,"border_color":"grey","border_color1":"black","toggle":1,"bg_color1":"gold","text_color":"white","text_font":"28","page":1}
+
+#   create Page 2 buttons     
+  - service: mqtt.publish
+    data:
+      topic: 'hasp/{{node}}/command/jsonl'
+      payload: >
+        {"page":2}
+
+        {"obj":"label","id":1,"x":50,"y":150,"w":200,"h":80,"txt":"Page 2 placeholder"}
+
+#   create Page 3 buttons     
+  - service: mqtt.publish
+    data:
+      topic: 'hasp/{{node}}/command/jsonl'
+      payload: >
+        {"page":3}
+
+        {"page":3,"obj":"label","id":1,"x":50,"y":150,"w":200,"h":80,"txt":"Page 3 placeholder"}
+
+#   create Page 4 buttons     
+  - service: mqtt.publish
+    data:
+      topic: 'hasp/{{node}}/command/jsonl'
+      payload: >
+        {"page":4}
+
+        {"page":4,"obj":"label","id":1,"x":50,"y":150,"w":200,"h":80,"txt":"Page 4 placeholder"}
+
+#   create Page 5 buttons     
+  - service: mqtt.publish
+    data:
+      topic: 'hasp/{{node}}/command/jsonl'
+      payload: >
+        {"page":5}
+
+        {"page":5,"obj":"label","id":1,"x":50,"y":150,"w":200,"h":80,"txt":"Page 5 placeholder"}
